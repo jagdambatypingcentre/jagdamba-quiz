@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jagdamba Typing Centre – KVS JSA MS Word Quiz</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,"Noto Sans Devanagari",sans-serif;background:#eef3f8;color:#172033}
+.container{max-width:900px;margin:0 auto;padding:22px}
+.card{background:#fff;border-radius:18px;box-shadow:0 8px 25px rgba(0,0,0,.10);padding:28px}
+h1{margin:0 0 8px;text-align:center;color:#123d73}
+.subtitle{text-align:center;color:#667085;margin-bottom:25px}
+input{width:100%;padding:14px;border:2px solid #d0d5dd;border-radius:10px;font-size:16px;margin:8px 0 16px}
+button{border:0;border-radius:10px;padding:13px 22px;font-size:16px;font-weight:700;cursor:pointer}
+.primary{background:#1257a6;color:white;width:100%}
+.primary:hover{background:#0e4788}
+.hidden{display:none}
+.topbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:18px;flex-wrap:wrap}
+.progress-wrap{height:10px;background:#e5e7eb;border-radius:20px;overflow:hidden;margin:10px 0 22px}
+.progress{height:100%;width:0;background:#1257a6;transition:.3s}
+.qnum{font-weight:700;color:#1257a6}
+.question{font-size:21px;font-weight:700;line-height:1.5;margin:12px 0 20px}
+.options-scroll{max-height:430px;overflow-y:auto;padding-right:6px}
+.option{display:block;width:100%;text-align:left;background:#f8fafc;border:2px solid #d9e1ea;color:#172033;margin:10px 0;padding:14px;border-radius:10px;transition:.2s}
+.option:hover:not(:disabled){border-color:#1257a6;background:#eef6ff}
+.option:disabled{cursor:default}
+.option.correct{background:#dcfce7;border-color:#16a34a;color:#166534}
+.option.wrong{background:#fee2e2;border-color:#dc2626;color:#991b1b}
+.feedback{margin-top:15px;padding:13px;border-radius:10px;font-weight:600;line-height:1.45}
+.feedback.correct{background:#ecfdf3;color:#166534}
+.feedback.wrong{background:#fff1f2;color:#991b1b}
+.nav{display:flex;justify-content:space-between;margin-top:22px;gap:10px}
+.secondary{background:#e8eef6;color:#17365d}
+.result{text-align:center}
+.score{font-size:44px;font-weight:800;color:#1257a6;margin:15px 0}
+.badge{display:inline-block;padding:8px 14px;border-radius:30px;background:#eef6ff;color:#1257a6;font-weight:700}
+.review{text-align:left;margin-top:25px}
+.review-item{padding:14px;border:1px solid #e2e8f0;border-radius:10px;margin:10px 0}
+.small{font-size:13px;color:#667085}
+@media(max-width:600px){.card{padding:18px}.question{font-size:18px}.container{padding:10px}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="card" id="startScreen">
+    <h1>Jagdamba Typing Centre</h1>
+    <div class="subtitle">Introduction & Home Tab | 50 Objective Questions</div>
+    <label for="studentName"><b>Student Name</b></label>
+    <input id="studentName" type="text" placeholder="Enter your name">
+    <label for="district"><b>District</b></label>
+    <input id="district" type="text" placeholder="Enter your district">
+    <button class="primary" onclick="startQuiz()">Start Quiz</button>
+  </div>
+
+  <div class="card hidden" id="quizScreen">
+    <div class="topbar">
+      <div><b id="studentDisplay"></b></div>
+      <div style="display:flex;gap:16px;align-items:center">
+        <div class="qnum" id="counter"></div>
+        <div id="timer" style="font-weight:800;color:#1257a6;background:#eef6ff;padding:8px 12px;border-radius:8px">00:00</div>
+      </div>
+    </div>
+    <div class="progress-wrap"><div class="progress" id="progress"></div></div>
+    <div class="question" id="question"></div>
+    <div class="options-scroll" id="options"></div>
+    <div id="feedback"></div>
+    <div class="nav">
+      <button class="secondary" id="prevBtn" onclick="prevQuestion()">Previous</button>
+      <button class="primary" id="nextBtn" onclick="nextQuestion()" style="width:auto">Next</button>
+    </div>
+  </div>
+
+  <div class="card hidden result" id="resultScreen">
+    <h1>Quiz Completed!</h1>
+    <p id="resultName"></p>
+    <div class="score" id="score"></div>
+    <div class="badge" id="percentage"></div>
+    <p id="message"></p>
+    <button class="primary" onclick="restartQuiz()">Restart Quiz</button>
+    <div class="review" id="review"></div>
+  </div>
+</div>
+
+<script>
+const quizData = [{"q": "MS Word किस प्रकार का software है?", "opts": ["Spreadsheet", "Word Processor", "Database", "Presentation"], "a": 1, "correct": "Word Processor"}, {"q": "MS Word में नई document बनाने की shortcut key है:", "opts": ["Ctrl + O", "Ctrl + N", "Ctrl + S", "Ctrl + P"], "a": 1, "correct": "Ctrl + N"}, {"q": "Existing document खोलने की shortcut key है:", "opts": ["Ctrl + O", "Ctrl + N", "Ctrl + W", "Ctrl + E"], "a": 0, "correct": "Ctrl + O"}, {"q": "Document Save करने की shortcut key है:", "opts": ["Ctrl + A", "Ctrl + S", "Ctrl + D", "Ctrl + F"], "a": 1, "correct": "Ctrl + S"}, {"q": "Print command की shortcut key है:", "opts": ["Ctrl + P", "Ctrl + R", "Ctrl + T", "Ctrl + L"], "a": 0, "correct": "Ctrl + P"}, {"q": "सभी text को select करने के लिए:", "opts": ["Ctrl + S", "Ctrl + A", "Ctrl + X", "Ctrl + Z"], "a": 1, "correct": "Ctrl + A"}, {"q": "Bold की shortcut key है:", "opts": ["Ctrl + B", "Ctrl + I", "Ctrl + U", "Ctrl + E"], "a": 0, "correct": "Ctrl + B"}, {"q": "Italic की shortcut key है:", "opts": ["Ctrl + B", "Ctrl + I", "Ctrl + U", "Ctrl + T"], "a": 1, "correct": "Ctrl + I"}, {"q": "Underline की shortcut key है:", "opts": ["Ctrl + U", "Ctrl + L", "Ctrl + R", "Ctrl + J"], "a": 0, "correct": "Ctrl + U"}, {"q": "Home Tab में कौन-सा group होता है?", "opts": ["Clipboard", "Font", "Paragraph", "उपरोक्त सभी"], "a": 3, "correct": "उपरोक्त सभी"}, {"q": "Copy की shortcut key है:", "opts": ["Ctrl + C", "Ctrl + X", "Ctrl + V", "Ctrl + P"], "a": 0, "correct": "Ctrl + C"}, {"q": "Cut की shortcut key है:", "opts": ["Ctrl + C", "Ctrl + X", "Ctrl + V", "Ctrl + Z"], "a": 1, "correct": "Ctrl + X"}, {"q": "Paste की shortcut key है:", "opts": ["Ctrl + P", "Ctrl + C", "Ctrl + V", "Ctrl + A"], "a": 2, "correct": "Ctrl + V"}, {"q": "Undo की shortcut key है:", "opts": ["Ctrl + Y", "Ctrl + U", "Ctrl + Z", "Ctrl + X"], "a": 2, "correct": "Ctrl + Z"}, {"q": "Redo/Repeat की सामान्य shortcut key है:", "opts": ["Ctrl + Y", "Ctrl + R", "Ctrl + E", "Ctrl + H"], "a": 0, "correct": "Ctrl + Y"}, {"q": "Text को Center Align करने की shortcut key है:", "opts": ["Ctrl + L", "Ctrl + E", "Ctrl + R", "Ctrl + J"], "a": 1, "correct": "Ctrl + E"}, {"q": "Left Align की shortcut key है:", "opts": ["Ctrl + L", "Ctrl + E", "Ctrl + R", "Ctrl + J"], "a": 0, "correct": "Ctrl + L"}, {"q": "Right Align की shortcut key है:", "opts": ["Ctrl + L", "Ctrl + E", "Ctrl + R", "Ctrl + J"], "a": 2, "correct": "Ctrl + R"}, {"q": "Justify की shortcut key है:", "opts": ["Ctrl + J", "Ctrl + K", "Ctrl + G", "Ctrl + Q"], "a": 0, "correct": "Ctrl + J"}, {"q": "Find command की shortcut key है:", "opts": ["Ctrl + F", "Ctrl + H", "Ctrl + G", "Ctrl + D"], "a": 0, "correct": "Ctrl + F"}, {"q": "Home Tab का Clipboard group किससे संबंधित है?", "opts": ["Cut, Copy, Paste", "Font formatting", "Paragraph alignment", "Page setup"], "a": 0, "correct": "Cut, Copy, Paste"}, {"q": "Format Painter का उपयोग किसके लिए होता है?", "opts": ["Text delete करने के लिए", "Formatting copy करने के लिए", "File save करने के लिए", "Text search करने के लिए"], "a": 1, "correct": "Formatting copy करने के लिए"}, {"q": "Font group में निम्न में से कौन-सा option होता है?", "opts": ["Font Size", "Bold", "Font Color", "उपरोक्त सभी"], "a": 3, "correct": "उपरोक्त सभी"}, {"q": "Text का font बदलने के लिए किस option का उपयोग किया जाता है?", "opts": ["Font Name", "Font Color", "Text Highlight", "Styles"], "a": 0, "correct": "Font Name"}, {"q": "Text का आकार बदलने के लिए किस option का उपयोग होता है?", "opts": ["Font Size", "Font Color", "Change Case", "Format Painter"], "a": 0, "correct": "Font Size"}, {"q": "Text को highlight करने के लिए कौन-सा option प्रयोग होता है?", "opts": ["Text Highlight Color", "Font Color", "Shading", "Borders"], "a": 0, "correct": "Text Highlight Color"}, {"q": "Font Color का उपयोग किसके लिए होता है?", "opts": ["Page का रंग बदलना", "Text का रंग बदलना", "Highlight हटाना", "Border लगाना"], "a": 1, "correct": "Text का रंग बदलना"}, {"q": "Bullets और Numbering किस group में मिलते हैं?", "opts": ["Clipboard", "Font", "Paragraph", "Editing"], "a": 2, "correct": "Paragraph"}, {"q": "Paragraph को दोनों margins पर समान रूप से align करने को क्या कहते हैं?", "opts": ["Left", "Right", "Center", "Justify"], "a": 3, "correct": "Justify"}, {"q": "Line spacing का संबंध किससे है?", "opts": ["Words के बीच दूरी", "Lines के बीच दूरी", "Pages के बीच दूरी", "Margins के बीच दूरी"], "a": 1, "correct": "Lines के बीच दूरी"}, {"q": "Increase Indent का उपयोग किसके लिए किया जाता है?", "opts": ["Paragraph को अंदर की ओर ले जाने के लिए", "Font बढ़ाने के लिए", "Page बढ़ाने के लिए", "Text bold करने के लिए"], "a": 0, "correct": "Paragraph को अंदर की ओर ले जाने के लिए"}, {"q": "Decrease Indent क्या करता है?", "opts": ["Indent कम करता है", "Font कम करता है", "Line spacing कम करता है", "Page size कम करता है"], "a": 0, "correct": "Indent कम करता है"}, {"q": "Change Case option का उपयोग किसके लिए किया जाता है?", "opts": ["Text का case बदलने के लिए", "Font बदलने के लिए", "Page बदलने के लिए", "Paragraph delete करने के लिए"], "a": 0, "correct": "Text का case बदलने के लिए"}, {"q": "UPPERCASE का अर्थ है:", "opts": ["सभी छोटे अक्षर", "सभी बड़े अक्षर", "पहला अक्षर बड़ा", "अक्षर उल्टे"], "a": 1, "correct": "सभी बड़े अक्षर"}, {"q": "Ctrl + H का उपयोग किस command के लिए किया जाता है?", "opts": ["Help", "Replace", "Highlight", "Hyperlink"], "a": 1, "correct": "Replace"}, {"q": "Ctrl + K सामान्यतः किसके लिए प्रयोग होता है?", "opts": ["Hyperlink Insert करना", "Text Delete करना", "Copy करना", "Print करना"], "a": 0, "correct": "Hyperlink Insert करना"}, {"q": "Home Tab के Editing group में कौन-से commands होते हैं?", "opts": ["Find, Replace, Select", "Cut, Copy, Paste", "Bold, Italic, Underline", "Bullets, Numbering"], "a": 0, "correct": "Find, Replace, Select"}, {"q": "किसी document में specific word खोजने के लिए कौन-सा command उपयोग करेंगे?", "opts": ["Replace", "Find", "Select", "Format Painter"], "a": 1, "correct": "Find"}, {"q": "किसी एक word को दूसरे word से बदलने के लिए कौन-सा command उपयोग होगा?", "opts": ["Find", "Replace", "Select", "Paste"], "a": 1, "correct": "Replace"}, {"q": "Styles का मुख्य उद्देश्य क्या है?", "opts": ["Consistent formatting लागू करना", "File delete करना", "Printing करना", "Page number डालना"], "a": 0, "correct": "Consistent formatting लागू करना"}, {"q": "किसी text की formatting को दूसरे text पर लागू करने के लिए सबसे उपयुक्त option है:", "opts": ["Find", "Format Painter", "Replace", "Select"], "a": 1, "correct": "Format Painter"}, {"q": "यदि text को Bold, Italic और Underline तीनों करना हो, तो कौन-सी shortcut keys उपयोग होंगी?", "opts": ["Ctrl+B, Ctrl+I, Ctrl+U", "Ctrl+B, Ctrl+E, Ctrl+U", "Ctrl+I, Ctrl+R, Ctrl+U", "Ctrl+L, Ctrl+I, Ctrl+B"], "a": 0, "correct": "Ctrl+B, Ctrl+I, Ctrl+U"}, {"q": "यदि एक paragraph को Center से Justify करना हो, तो कौन-सी shortcut key उपयोग करेंगे?", "opts": ["Ctrl + J", "Ctrl + E", "Ctrl + L", "Ctrl + R"], "a": 0, "correct": "Ctrl + J"}, {"q": "Home Tab में text formatting से संबंधित मुख्य group कौन-सा है?", "opts": ["Font", "Paragraph", "Styles", "Font और Styles दोनों"], "a": 3, "correct": "Font और Styles दोनों"}, {"q": "यदि किसी list में क्रमांक automatically लगाना हो, तो कौन-सा option उपयोग होगा?", "opts": ["Bullets", "Numbering", "Sort", "Multilevel List"], "a": 1, "correct": "Numbering"}, {"q": "Multilevel List का उपयोग मुख्यतः किसके लिए होता है?", "opts": ["अलग-अलग स्तरों वाली सूची बनाने के लिए", "Font size बदलने के लिए", "Text color बदलने के लिए", "Page margin बदलने के लिए"], "a": 0, "correct": "अलग-अलग स्तरों वाली सूची बनाने के लिए"}, {"q": "यदि किसी paragraph की सभी lines को समान रूप से left और right margins के बीच फैलाना हो, तो कौन-सा alignment होगा?", "opts": ["Left", "Center", "Right", "Justify"], "a": 3, "correct": "Justify"}, {"q": "Find & Replace में Replace All का उद्देश्य क्या है?", "opts": ["केवल पहला match बदलना", "सभी matching occurrences बदलना", "केवल selected text बदलना", "पूरा document delete करना"], "a": 1, "correct": "सभी matching occurrences बदलना"}, {"q": "यदि किसी selected text पर पहले से मौजूद formatting को दूसरे text पर लागू करना हो, तो सही sequence क्या है?", "opts": ["Select source → Format Painter → Select destination", "Select destination → Delete → Format Painter", "Find → Replace → Format Painter", "Copy → Paste Special → Delete"], "a": 0, "correct": "Select source → Format Painter → Select destination"}, {"q": "Home Tab में निम्न में से कौन-सा option text को visually emphasize करने के लिए इस्तेमाल किया जा सकता है?", "opts": ["Bold", "Text Highlight Color", "Font Color", "उपरोक्त सभी"], "a": 3, "correct": "उपरोक्त सभी"}];
+let studentName="", studentDistrict="", current=0, score=0, answered=new Array(quizData.length).fill(null);
+let elapsedSeconds=0, timerInterval=null;
+const SCRIPT_URL = 
+"https://script.google.com/macros/s/AKfycbzaMudUJmmGdwgrp22CqyCWICjobxAi4Qo_bgXlvnLPuDVuAB2GYnBc1dEzL9u0GXYsJA/exec";
+function startQuiz(){
+  const name=document.getElementById("studentName").value.trim();
+  const district=document.getElementById("district").value.trim();
+  if(!name){alert("कृपया Student Name दर्ज करें।");return;}
+  if(!district){alert("कृपया District दर्ज करें।");return;}
+  studentName=name;
+  studentDistrict=district;
+  document.getElementById("studentDisplay").textContent="Student: "+studentName+" | District: "+studentDistrict;
+  document.getElementById("startScreen").classList.add("hidden");
+  document.getElementById("quizScreen").classList.remove("hidden");
+  startTimer();
+  renderQuestion();
+}
+function startTimer(){
+  clearInterval(timerInterval);
+  elapsedSeconds=0;
+  updateTimer();
+  timerInterval=setInterval(()=>{
+    elapsedSeconds++;
+    updateTimer();
+  },1000);
+}
+
+function updateTimer(){
+  const m=Math.floor(elapsedSeconds/60);
+  const sec=elapsedSeconds%60;
+  document.getElementById("timer").textContent=
+    String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0");
+}
+
+function renderQuestion(){
+  const item=quizData[current];
+  document.getElementById("counter").textContent=`Question ${current+1} / ${quizData.length}`;
+  document.getElementById("progress").style.width=((current+1)/quizData.length*100)+"%";
+  document.getElementById("question").textContent=`${current+1}. ${item.q}`;
+  const options=document.getElementById("options");
+  options.innerHTML="";
+  item.opts.forEach((opt,i)=>{
+    const b=document.createElement("button");
+    b.className="option";
+    b.textContent=String.fromCharCode(65+i)+". "+opt;
+    b.onclick=()=>selectAnswer(i);
+    options.appendChild(b);
+  });
+  document.getElementById("feedback").innerHTML="";
+  document.getElementById("prevBtn").disabled=current===0;
+  document.getElementById("nextBtn").textContent=current===quizData.length-1?"Finish Quiz":"Next";
+  if(answered[current]!==null) showSavedAnswer();
+}
+function selectAnswer(index){
+  if(answered[current]!==null)return;
+  const item=quizData[current];
+  answered[current]=index;
+  if(index===item.a){
+    score += 2;              // Correct = +2 marks
+  }else{
+    score -= 0.5;            // Wrong = -1/4 of 2 = -0.5 marks
+  }
+  showSavedAnswer();
+}
+function showSavedAnswer(){
+  const item=quizData[current], chosen=answered[current];
+  const buttons=document.querySelectorAll(".option");
+  buttons.forEach((b,i)=>{
+    b.disabled=true;
+    if(i===item.a)b.classList.add("correct");
+    if(i===chosen && chosen!==item.a)b.classList.add("wrong");
+  });
+  const fb=document.getElementById("feedback");
+  if(chosen===item.a){
+    fb.className="feedback correct";
+    fb.textContent="✓ Correct! सही उत्तर: "+item.correct;
+  }else{
+    fb.className="feedback wrong";
+    fb.textContent="✗ Incorrect. सही उत्तर: "+item.correct;
+  }
+}
+function nextQuestion(){
+  if(answered[current]===null){alert("कृपया पहले एक option select करें।");return;}
+  if(current<quizData.length-1){current++;renderQuestion();}else finishQuiz();
+}
+function prevQuestion(){
+  if(current>0){current--;renderQuestion();}
+}
+function finishQuiz(){
+  clearInterval(timerInterval);
+  document.getElementById("quizScreen").classList.add("hidden");
+  document.getElementById("resultScreen").classList.remove("hidden");
+  const totalMarks = quizData.length * 2;
+  const pct = Math.round((score / totalMarks) * 100);
+fetch(SCRIPT_URL, {
+  method: "POST",
+  mode: "no-cors",
+  headers: {
+    "Content-Type": "text/plain;charset=utf-8"
+  },
+  body: JSON.stringify({
+    studentName: studentName,
+    district: studentDistrict,
+    score: score,
+    totalQuestions: quizData.length,
+    percentage: pct
+  })
+});
+  const totalM=Math.floor(elapsedSeconds/60);
+  const totalS=elapsedSeconds%60;
+  const timeText=String(totalM).padStart(2,"0")+":"+String(totalS).padStart(2,"0");
+  document.getElementById("resultName").textContent="Student: "+studentName+" | District: "+studentDistrict;
+  document.getElementById("score").textContent =
+    score.toFixed(2).replace(/\.00$/,"")+" / "+totalMarks+" Marks";
+  document.getElementById("percentage").textContent =
+    "Percentage: "+pct+"%  |  Correct: +2  |  Wrong: -0.5";
+  document.getElementById("message").textContent+="  Time Taken: "+timeText;
+  document.getElementById("message").textContent =
+    pct>=80 ? "बहुत बढ़िया! आपकी तैयारी अच्छी है।" :
+    pct>=60 ? "अच्छा प्रयास! थोड़ी और practice करें।" :
+    "अधिक practice की आवश्यकता है। Home Tab और shortcuts को revise करें।";
+  const review=document.getElementById("review");
+  review.innerHTML="<h3>Answer Review</h3>";
+  quizData.forEach((item,i)=>{
+    const div=document.createElement("div"); div.className="review-item";
+    const chosen=item.opts[answered[i]];
+    div.innerHTML=`<b>Q${i+1}.</b> ${item.q}<br>
+      <span class="small">Your answer: ${chosen}</span><br>
+      <span style="color:#166534"><b>Correct: ${item.correct}</b></span>`;
+    review.appendChild(div);
+  });
+}
+function restartQuiz(){
+  clearInterval(timerInterval);
+  current=0; score=0; answered=new Array(quizData.length).fill(null); elapsedSeconds=0;
+  document.getElementById("resultScreen").classList.add("hidden");
+  document.getElementById("startScreen").classList.remove("hidden");
+  document.getElementById("studentName").value="";
+  document.getElementById("district").value="";
+  studentDistrict="";
+}
+</script>
+</body>
+</html>
