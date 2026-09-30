@@ -88,7 +88,7 @@ let studentName="", studentDistrict="", current=0, score=0, answered=new Array(q
 let elapsedSeconds=0, timerInterval=null;
 const SCRIPT_URL = 
 "https://script.google.com/macros/s/AKfycbzaMudUJmmGdwgrp22CqyCWICjobxAi4Qo_bgXlvnLPuDVuAB2GYnBc1dEzL9u0GXYsJA/exec";
-  const QUIZ_NAME = "Quiz-1"; 
+  const QUIZ_NAME = "QUIZ-2"; 
 function startQuiz(){
   const name=document.getElementById("studentName").value.trim();
   const district=document.getElementById("district").value.trim();
@@ -186,7 +186,7 @@ fetch(SCRIPT_URL, {
     "Content-Type": "text/plain;charset=utf-8"
   },
   body: JSON.stringify({
-    quizname: "Quiz-1",
+    quizname: "QUIZ-2",
     studentName: studentName,
     district: studentDistrict,
     score: score,
